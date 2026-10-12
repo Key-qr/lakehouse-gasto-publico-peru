@@ -1,0 +1,29 @@
+# Datos: el lakehouse y los CSV del MEF pesan GB y se regeneran; no van al repo.
+/data/
+*.duckdb
+*.duckdb.wal
+*.part
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+build/
+dist/
+.pytest_cache/
+.ruff_cache/
+.coverage
+coverage.xml
+htmlcov/
+
+# Dagster local
+.dagster/
+tmp*/
+
+# Editores / SO
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

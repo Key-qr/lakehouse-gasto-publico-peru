@@ -1,0 +1,6 @@
+# Dependencias mínimas para la demo publicada (Streamlit Community Cloud): solo lee los marts.
+streamlit>=1.50
+plotly>=5.24
+duckdb>=1.1
+polars>=1.30
+pyarrow>=17

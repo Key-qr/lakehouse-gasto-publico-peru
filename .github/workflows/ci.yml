@@ -1,0 +1,82 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install "ruff>=0.6"
+      - run: ruff check src tests dashboard scripts
+      - run: ruff format --check src tests dashboard scripts
+
+  test:
+    runs-on: ubuntu-latest
+    needs: lint
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.12", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+      - run: pip install -e ".[dev,dashboard,orchestration]"
+      - run: pytest --cov=gasto_lakehouse --cov-report=term-missing --cov-report=xml
+      - uses: actions/upload-artifact@v4
+        if: matrix.python-version == '3.12'
+        with:
+          name: coverage
+          path: coverage.xml
+
+  e2e:
+    # Corre el pipeline completo con 3 años de muestra, como lo haría alguien que clona el repo.
+    runs-on: ubuntu-latest
+    needs: test
+    env:
+      LAKEHOUSE_ROOT: ${{ github.workspace }}/data
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install ".[dashboard,orchestration]"
+      - name: Pipeline de punta a punta
+        run: |
+          lakehouse sample -y 2023 -y 2024 -y 2025 --rows 200000 --months 9
+          lakehouse run
+          lakehouse run                     # la segunda corrida debe ser noop (idempotencia)
+          lakehouse status
+          lakehouse quality
+      - name: Definiciones de Dagster
+        run: dagster definitions validate -m gasto_lakehouse.orchestration
+      - name: Smoke test del dashboard
+        run: |
+          python - <<'PY'
+          import os
+          from streamlit.testing.v1 import AppTest
+          os.environ["DASHBOARD_DB"] = os.path.join(os.environ["LAKEHOUSE_ROOT"], "warehouse.duckdb")
+          at = AppTest.from_file("dashboard/app.py", default_timeout=120).run()
+          assert not at.exception, at.exception
+          print([(m.label, m.value) for m in at.metric])
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: warehouse-muestra
+          path: data/warehouse.duckdb
+          retention-days: 7

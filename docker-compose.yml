@@ -1,0 +1,41 @@
+# Levanta todo con:  docker compose up --build
+#   pipeline   -> genera la muestra (si landing está vacío) y corre bronze/silver/gold/warehouse
+#   dagster    -> UI de orquestación en http://localhost:3000
+#   dashboard  -> Streamlit en http://localhost:8501
+# Para datos reales del MEF:  docker compose run --rm pipeline lakehouse download -y 2024
+
+x-app: &app
+  build: .
+  image: gasto-lakehouse:latest
+  volumes:
+    - ./data:/data
+  environment:
+    LAKEHOUSE_ROOT: /data
+    DAGSTER_HOME: /data/.dagster
+
+services:
+  pipeline:
+    <<: *app
+    command: >
+      sh -c "ls /data/landing/*.csv >/dev/null 2>&1 || lakehouse sample -y 2023 -y 2024 --months 9;
+             lakehouse run"
+
+  dagster:
+    <<: *app
+    command: dagster dev -h 0.0.0.0 -p 3000 -m gasto_lakehouse.orchestration
+    ports:
+      - "3000:3000"
+    depends_on:
+      pipeline:
+        condition: service_completed_successfully
+
+  dashboard:
+    <<: *app
+    command: streamlit run dashboard/app.py --server.address 0.0.0.0 --server.port 8501
+    environment:
+      DASHBOARD_DB: /data/warehouse.duckdb
+    ports:
+      - "8501:8501"
+    depends_on:
+      pipeline:
+        condition: service_completed_successfully

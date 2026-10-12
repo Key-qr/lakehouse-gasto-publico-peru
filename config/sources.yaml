@@ -1,0 +1,20 @@
+# Fuentes oficiales: Plataforma Nacional de Datos Abiertos, dataset "Presupuesto y Ejecución de Gasto"
+# publicado por el MEF (origen: Consulta Amigable).
+# https://www.datosabiertos.gob.pe/dataset/presupuesto-y-ejecuci%C3%B3n-de-gasto
+#
+# Cada archivo es una foto completa del año: el MEF lo republica con el mes en curso, por eso
+# la carga en silver reemplaza la partición del año (ver docs/adr/0003-carga-incremental.md).
+# Los años cerrados pesan varios GB cada uno; empieza con uno o dos.
+
+base_url: https://fs.datosabiertos.mef.gob.pe/datastorefiles
+
+dictionary_url: https://fs.datosabiertos.mef.gob.pe/datastorefiles/Gastos_Diccionario.csv
+
+sources:
+  - { year: 2020, kind: anual, url: "https://fs.datosabiertos.mef.gob.pe/datastorefiles/2020-Gasto.csv" }
+  - { year: 2021, kind: anual, url: "https://fs.datosabiertos.mef.gob.pe/datastorefiles/2021-Gasto.csv" }
+  - { year: 2022, kind: anual, url: "https://fs.datosabiertos.mef.gob.pe/datastorefiles/2022-Gasto.csv" }
+  - { year: 2023, kind: anual, url: "https://fs.datosabiertos.mef.gob.pe/datastorefiles/2023-Gasto.csv" }
+  - { year: 2024, kind: anual, url: "https://fs.datosabiertos.mef.gob.pe/datastorefiles/2024-Gasto.csv" }
+  - { year: 2025, kind: mensual, url: "https://fs.datosabiertos.mef.gob.pe/datastorefiles/2025-Gasto-Mensual.csv" }
+  - { year: 2026, kind: mensual, url: "https://fs.datosabiertos.mef.gob.pe/datastorefiles/2026-Gasto-Mensual.csv" }
