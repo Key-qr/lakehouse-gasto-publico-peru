@@ -77,6 +77,10 @@ Con `make` disponible: `make install && make demo && make dashboard`.
 
 Con Docker: `docker compose up --build` levanta el pipeline, Dagster en `:3000` y el dashboard en `:8501`.
 
+### Publicar el dashboard gratis
+
+El dashboard lee solo los marts exportados en `dashboard/data` (unos pocos KB), así que se puede publicar en Streamlit Community Cloud sin el lakehouse completo: repo `Key-qr/lakehouse-gasto-publico-peru`, rama `main`, archivo `dashboard/app.py`. Las dependencias de la demo están en `requirements.txt`. Para regenerar los marts con otros datos: `lakehouse warehouse --demo-dir dashboard/data`.
+
 ### Con datos reales del MEF
 
 ```bash

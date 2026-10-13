@@ -1,0 +1,7 @@
+# Dependencias de la demo publicada en Streamlit Community Cloud (solo lee los marts de
+# dashboard/data). Para desarrollar el pipeline completo usa: pip install -e ".[dev,dashboard,orchestration]"
+streamlit>=1.50
+plotly>=5.24
+duckdb>=1.1
+polars>=1.30
+pyarrow>=17
