@@ -4,7 +4,7 @@
 ![Python](https://img.shields.io/badge/python-3.11%20%7C%203.12%20%7C%203.13-blue)
 ![Delta Lake](https://img.shields.io/badge/storage-Delta%20Lake-00ADD4)
 ![License](https://img.shields.io/badge/license-MIT-green)
-[![Demo](https://img.shields.io/badge/demo-en%20vivo-FF4B4B?logo=streamlit&logoColor=white)](https://gasto-publico-peru.streamlit.app/)
+[![Demo](https://img.shields.io/badge/demo-en%20vivo-FF4B4B?logo=streamlit&logoColor=white)](https://lakehouse-publico-peru.streamlit.app/)
 
 Plataforma de datos de punta a punta sobre la **ejecución presupuestal del Estado peruano**, construida con la arquitectura medallion (bronze, silver, gold) sobre tablas Delta Lake.
 
@@ -12,7 +12,7 @@ Toma los CSV oficiales que publica el MEF (un archivo por año, varios GB cada u
 
 Responde preguntas como: ¿qué departamentos ejecutan menos de su presupuesto?, ¿cómo avanza el gasto mes a mes?, ¿qué proyectos de inversión están por debajo del 40 % de avance?
 
-**[Ver el dashboard en vivo →](https://gasto-publico-peru.streamlit.app/)** (corre con datos de muestra que siguen el esquema oficial del MEF).
+**[Ver el dashboard en vivo →](https://lakehouse-publico-peru.streamlit.app/)** (corre con datos de muestra que siguen el esquema oficial del MEF).
 
 > Fuente: [Presupuesto y Ejecución de Gasto](https://www.datosabiertos.gob.pe/dataset/presupuesto-y-ejecuci%C3%B3n-de-gasto) · Ministerio de Economía y Finanzas · Plataforma Nacional de Datos Abiertos.
 
